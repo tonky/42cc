@@ -1,4 +1,5 @@
 # Django settings for mybio project.
+import sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,13 +13,18 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'bio.sqlite3',                      # Or path to database file if using sqlite3.
+        'NAME': '/tmp/bio.sqlite3',                      # Or path to database file if using sqlite3.
+        'TEST_NAME': '/tmp/bio.sqlite3',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+TEST_DATABASE_NAME = '/tmp/bio.sqlite3'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# CHERRYPY_TEST_SERVER = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -68,6 +74,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'middleware.logging.RequestLog',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,6 +98,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'mybio.bio',
+    'django_nose',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
+
+if 'test' in sys.argv:
+    DATABASE_NAME = '/tmp/bio.sqlite3'

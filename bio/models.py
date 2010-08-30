@@ -7,6 +7,7 @@ class Bio(models.Model):
     email = models.EmailField()
 
 
-class MwareRequest(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
+class Log(models.Model):
+    method = models.CharField(max_length=10)
     url = models.URLField(verify_exists=False)
+    date = models.DateTimeField(auto_now_add=True)
