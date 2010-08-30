@@ -1,0 +1,12 @@
+[
+  {
+    "model": "bio.bio",
+    "pk": 1,
+    "fields": {
+      "name": "Igor",
+      "surname": "Tonky",
+      "bio": "Born and alive",
+      "email": "igor.tonky@gmail.com"
+    }
+  }
+]

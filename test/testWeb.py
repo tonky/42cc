@@ -11,10 +11,10 @@ class WebTest(unittest.TestCase):
     def test_bio_index(self):
         self.browser.get("http://localhost:8000/")
         self.assertEquals(self.browser.get_title(), "My biography")
-        self.assertEquals(self.by_id("name").get_value(), "Igor")
-        self.assertEquals(self.by_id("surname").get_value(), "Tonky")
-        self.assertEquals(self.by_id("bio").get_value(), "Born and alive")
-        self.assertEquals(self.by_id("email").get_value(), "igor.tonky@gmail.com")
+        self.assertEquals(self.by_id("name").get_text(), "Igor")
+        self.assertEquals(self.by_id("surname").get_text(), "Tonky")
+        self.assertEquals(self.by_id("bio").get_text(), "Born and alive")
+        self.assertEquals(self.by_id("email").get_text(), "igor.tonky@gmail.com")
 
     def tearDown(self):
         self.browser.close()
