@@ -5,3 +5,8 @@ class Bio(models.Model):
     surname = models.CharField(max_length=30)
     bio = models.TextField()
     email = models.EmailField()
+
+
+class MwareRequest(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    url = models.URLField(verify_exists=False)
