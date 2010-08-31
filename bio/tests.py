@@ -1,6 +1,8 @@
 import time, datetime
 from twill.commands import find, code, title, go
 from tddspry import NoseTestCase
+from django.test.client import Client
+import settings
 from bio.models import Log, Bio
 
 class WebTest(NoseTestCase):
@@ -26,3 +28,8 @@ class WebTest(NoseTestCase):
         self.assertEquals(req.date.hour, now.hour)
         self.assertEquals(req.date.minute, now.minute)
         self.assertTrue((now.second - req.date.second) <= 1)
+
+    def test_context_settings(self):
+        c = Client()
+        response = c.get('/')
+        self.assertEquals(response.context['settings'], settings)
