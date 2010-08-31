@@ -1,23 +1,24 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
+import unittest, time, re
 
-Replace these with more appropriate tests for your application.
-"""
+from tddspry.django import HttpTestCase
 
-from django.test import TestCase
+from selenium.remote import connect
+from selenium import FIREFOX
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class WebTest(HttpTestCase):
+    start_live_server = 1
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+    def setUp(self):
+        self.browser = connect(FIREFOX)
+        self.by_id = self.browser.find_element_by_id
 
->>> 1 + 1 == 2
-True
-"""}
+    def test_bio_index(self):
+        self.browser.get("http://localhost:8000/")
+        self.assertEquals(self.browser.get_title(), "My biography")
+        self.assertEquals(self.by_id("name").get_text(), "Igor")
+        self.assertEquals(self.by_id("surname").get_text(), "Tonky")
+        self.assertEquals(self.by_id("bio").get_text(), "Born and alive")
+        self.assertEquals(self.by_id("email").get_text(), "igor.tonky@gmail.com")
 
+    def tearDown(self):
+        self.browser.close()
