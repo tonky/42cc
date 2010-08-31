@@ -1,0 +1,13 @@
+{% for field in form %}
+    {% if field.errors %}
+        {% for error in field.errors %}
+            <p><strong>{{ field.name|capfirst }} is required and should be valid.</strong></p>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+
+<form action="/save/" method="post">{% csrf_token %}
+{{ form.as_ul }}
+<input type="submit" name="None" value="Submit" />
+</form>
