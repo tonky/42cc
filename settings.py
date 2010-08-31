@@ -1,5 +1,4 @@
-# Django settings for mybio project.
-import sys
+import os, sys
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,19 +11,13 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/tmp/bio.sqlite3',                      # Or path to database file if using sqlite3.
-        'TEST_NAME': '/tmp/bio.sqlite3',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(os.path.dirname(__file__), 'dev.db'),
+        'TEST_NAME': '/tmp/test.db',
     }
 }
 
-TEST_DATABASE_NAME = '/tmp/bio.sqlite3'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-# CHERRYPY_TEST_SERVER = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -82,13 +75,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'mybio.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/media/storage/projects/42cc/mybio/tpl'
+    os.path.join(os.path.dirname(__file__), 'tpl')
 )
 
 INSTALLED_APPS = (
@@ -97,11 +90,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'mybio.bio',
+    'bio',
     'django_nose',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
-
-if 'test' in sys.argv:
-    DATABASE_NAME = '/tmp/bio.sqlite3'

@@ -1,6 +1,6 @@
 # middleware to log any requests to DB
 
-from mybio.bio.models import Log
+from bio.models import Log
 
 class RequestLog:
     def process_request(self, request):

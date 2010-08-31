@@ -2,12 +2,10 @@ import time, datetime
 
 from tddspry.django import HttpTestCase
 
-from mybio import settings
-
 from selenium.remote import connect
 from selenium import FIREFOX
 
-from mybio.bio.models import Log, Bio
+from bio.models import Log, Bio
 
 class WebTest(HttpTestCase):
     start_live_server = True
@@ -18,17 +16,9 @@ class WebTest(HttpTestCase):
 
         a = Log.objects.all()
         from django.db import connection
-        # print settings.DATABASES
-        # print dir(connection)
-        # print connection.connection
-        # print connection.introspection
-        # print connection.settings_dict
 
     def test_bio_index(self):
-        # self.go('/')
         self.browser.get("http://localhost:8000/")
-
-        # print self.browser.get_page_source()
 
         self.assertEquals(self.browser.get_title(), "My biography")
         self.assertEquals(self.by_id("name").get_text(), "Igor")

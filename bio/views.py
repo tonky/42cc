@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render_to_response
-from mybio.bio.models import Bio
+from bio.models import Bio
 
 def index(request):
     bio = Bio.objects.get(pk=1)
