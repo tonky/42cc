@@ -1,24 +1,14 @@
-import unittest, time, re
+from tddspry import NoseTestCase
 
-from tddspry.django import HttpTestCase
+from twill.commands import find, code, title, go
 
-from selenium.remote import connect
-from selenium import FIREFOX
-
-class WebTest(HttpTestCase):
+class WebTest(NoseTestCase):
     start_live_server = 1
-
-    def setUp(self):
-        self.browser = connect(FIREFOX)
-        self.by_id = self.browser.find_element_by_id
-
+    
     def test_bio_index(self):
-        self.browser.get("http://localhost:8000/")
-        self.assertEquals(self.browser.get_title(), "My biography")
-        self.assertEquals(self.by_id("name").get_text(), "Igor")
-        self.assertEquals(self.by_id("surname").get_text(), "Tonky")
-        self.assertEquals(self.by_id("bio").get_text(), "Born and alive")
-        self.assertEquals(self.by_id("email").get_text(), "igor.tonky@gmail.com")
-
-    def tearDown(self):
-        self.browser.close()
+        go("http://localhost:8000/")
+        title("My biography")
+        find("Igor")
+        find("Tonky")
+        find("Born and alive")
+        find("igor.tonky@gmail.com")
