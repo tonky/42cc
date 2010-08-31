@@ -86,6 +86,13 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'tpl')
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = ("middleware.context.add_settings",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.contrib.messages.context_processors.messages")
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
