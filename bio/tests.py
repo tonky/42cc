@@ -1,5 +1,5 @@
 import time, datetime
-from twill.commands import find, code, title, go, fv, submit
+from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
 from tddspry import NoseTestCase
 from django.test.client import Client
 import settings
@@ -21,9 +21,10 @@ class WebTest(NoseTestCase):
         fv("1", "name", "")
         submit('0')
 
-        url("http://localhost:8000/edit/")
-        find("Igor")
-        find("Name is required.")
+        url("http://localhost:8000/save/")
+        find("Tonky")
+        notfind("Igor")
+        find("Name is required and should be valid.")
 
     def test_edit_form_saved(self):
         go("http://localhost:8000/edit/")

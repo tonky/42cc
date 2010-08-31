@@ -7,6 +7,8 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('',
     # Example:
     (r'^$', 'bio.views.index'),
+    (r'^edit/$', 'bio.views.edit'),
+    (r'^save/$', 'bio.views.save'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
