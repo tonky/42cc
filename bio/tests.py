@@ -5,6 +5,8 @@ from tddspry.django import HttpTestCase
 from selenium.remote import connect
 from selenium import FIREFOX
 
+import settings
+
 from django.test.client import Client
 
 from bio.models import Log, Bio
@@ -22,7 +24,7 @@ class WebTest(HttpTestCase):
     def test_context_settings(self):
         c = Client()
         response = c.get('/')
-        self.assertEquals(response.context['settings']['SITE_ID'], 1)
+        self.assertEquals(response.context['settings'], settings)
 
     def test_bio_index(self):
         self.browser.get("http://localhost:8000/")
