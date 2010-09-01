@@ -1,9 +1,9 @@
-from tddspry import NoseTestCase
+from tddspry.django import HttpTestCase
 import settings
 from django.test.client import Client
 
 
-class WebTest(NoseTestCase):
+class WebTest(HttpTestCase):
     start_live_server = True
 
     def test_context_settings(self):
