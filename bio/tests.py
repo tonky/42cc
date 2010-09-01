@@ -1,8 +1,6 @@
 import datetime
 import time
-from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
-from twill.commands import showforms
-from tddspry import NoseTestCase
+from tddspry.django import HttpTestCase
 from django.test.client import Client
 from django.forms import ModelForm
 import settings
@@ -11,7 +9,7 @@ from django.contrib.auth.models import User, check_password
 from bio.views import BioForm
 
 
-class WebTest(NoseTestCase):
+class WebTest(HttpTestCase):
     start_live_server = True
 
     def test_form_inversion(self):
@@ -27,87 +25,86 @@ class WebTest(NoseTestCase):
         self.assertEquals(list(reversed(old_order)), new_order)
 
     def test_bio_index(self):
-        go("http://localhost:8000/")
-        title("My biography")
-        find("Igor")
-        find("Tonky")
-        find("Born and alive")
-        find("igor.tonky@gmail.com")
+        self.go200("/")
+        self.title("My biography")
+        self.find("Igor")
+        self.find("Tonky")
+        self.find("Born and alive")
+        self.find("igor.tonky@gmail.com")
 
     def test_edit_require_auth(self):
-        go("http://localhost:8000/edit/")
+        self.go200("/edit/")
 
-        find("Please log in:")
-        url("http://localhost:8000/login/")
+        self.find("Please log in:")
+        self.url("/login/.*")
 
     def test_not_logged_in(self):
-        go("http://localhost:8000/logout/")
-        url("http://localhost:8000/")
-        find("Login to edit it")
-        notfind("Logout")
-        notfind("Edit bio")
+        self.go200("/logout/")
+        self.url("/")
+        self.find("Login to edit it")
+        self.notfind("Logout")
+        self.notfind("Edit bio")
 
     def test_logout(self):
-        go("http://localhost:8000/login/")
+        self.go200("/login/")
 
-        fv("1", "username", "tonky")
-        fv("1", "password", "1")
-        showforms()
-        submit('0')
+        self.fv("1", "username", "tonky")
+        self.fv("1", "password", "1")
+        self.submit('0')
 
-        go("http://localhost:8000/logout/")
+        self.go200("/logout/")
 
-        url("http://localhost:8000/")
-        find("Login to edit it")
-        notfind("Logout")
-        notfind("Edit bio")
+        self.url("/")
+        self.find("Login to edit it")
+        self.notfind("Logout")
+        self.notfind("Edit bio")
 
     def test_logged_in(self):
-        go("http://localhost:8000/login/")
+        self.go200("/login/")
 
-        fv("1", "username", "tonky")
-        fv("1", "password", "1")
-        submit('0')
+        self.fv("1", "username", "tonky")
+        self.fv("1", "password", "1")
+        self.submit('0')
 
-        url("http://localhost:8000/")
-        notfind("Login")
-        find("logout")
-        find("Edit this data")
+        self.url("/")
+        self.notfind("Login")
+        self.find("logout")
+        self.find("Edit this data")
 
     def test_edit_form_error(self):
-        go("http://localhost:8000/login/")
+        self.go200("/login/")
 
-        fv("1", "username", "tonky")
-        fv("1", "password", "1")
-        submit('0')
+        self.fv("1", "username", "tonky")
+        self.fv("1", "password", "1")
+        self.submit('0')
 
-        go("http://localhost:8000/edit/")
-        fv("1", "name", "")
-        submit('0')
+        self.go("/edit/")
+        self.fv("1", "name", "")
+        self.submit('0')
 
-        url("http://localhost:8000/save/")
-        find("Tonky")
-        notfind("Igor")
-        find("Name is required and should be valid.")
+        self.url("/save/")
+        self.find("Tonky")
+        self.notfind("Igor")
+        self.find("Name is required and should be valid.")
 
     def test_edit_form_saved(self):
-        go("http://localhost:8000/login/")
+        self.go200("/login/")
 
-        fv("1", "username", "tonky")
-        fv("1", "password", "1")
-        submit('0')
+        self.fv("1", "username", "tonky")
+        self.fv("1", "password", "1")
+        self.submit('0')
 
-        go("http://localhost:8000/edit/")
-        fv("1", "name", "HYPNOTOAD")
-        fv("1", "email", "omicron@persei.no9")
-        submit('0')
+        self.go200("/edit/")
+        self.fv("1", "name", "HYPNOTOAD")
+        self.fv("1", "email", "omicron@persei.nine")
+        self.submit('0')
 
-        url("http://localhost:8000/")
-        find("HYPNOTOAD")
-        find("omicron@persei.no9")
+        self.url("/")
+        self.find("HYPNOTOAD")
+        self.find("omicron@persei.nine")
 
     def test_middleware_logging(self):
-        go("http://localhost:8000/test/me/")
+        self.go("/test/me/")
 
         req = Log.objects.order_by('-date')[0] # last by date
 
