@@ -17,6 +17,7 @@ def index(request):
                               context_instance=RequestContext(request))
 
 
+
 def edit(request):
     bio = Bio.objects.get(pk=1)
 
@@ -24,6 +25,7 @@ def edit(request):
 
     return render_to_response('edit_form.html', {'form': form},
                               context_instance=RequestContext(request))
+
 
 
 def save(request):

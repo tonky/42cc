@@ -1,5 +1,4 @@
 # middleware to log any requests to DB
-
 from bio.models import Log
 
 

@@ -1,4 +1,5 @@
-import time, datetime
+import datetime
+import time
 from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
 from tddspry import NoseTestCase
 from django.test.client import Client
