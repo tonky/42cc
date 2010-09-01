@@ -15,6 +15,7 @@ class WebTest(NoseTestCase):
     start_live_server = True
 
     def test_form_inversion(self):
+
         class StraightBioForm(ModelForm):
 
             class Meta:
@@ -24,7 +25,6 @@ class WebTest(NoseTestCase):
         new_order = BioForm.base_fields.keys()
 
         self.assertEquals(list(reversed(old_order)), new_order)
-
 
     def test_bio_index(self):
         go("http://localhost:8000/")

@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 from bio.models import Bio
 from django.forms import ModelForm
+from django.forms.models import fields_for_model
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
@@ -11,6 +12,7 @@ class BioForm(ModelForm):
 
     class Meta:
         model = Bio
+        fields = list(reversed([field.name for field in Bio._meta.fields]))
 
 
 def index(request):
