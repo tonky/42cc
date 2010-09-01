@@ -3,6 +3,8 @@ from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 from bio.models import Bio
 from django.forms import ModelForm
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 
 class BioForm(ModelForm):
@@ -17,6 +19,7 @@ def index(request):
                               context_instance=RequestContext(request))
 
 
+@login_required(redirect_field_name='/')
 def edit(request):
     bio = Bio.objects.get(pk=1)
 
@@ -24,6 +27,11 @@ def edit(request):
 
     return render_to_response('edit_form.html', {'form': form},
                               context_instance=RequestContext(request))
+
+
+def logoff(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 
 def save(request):

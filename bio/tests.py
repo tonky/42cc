@@ -1,10 +1,12 @@
 import datetime
 import time
 from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
+from twill.commands import showforms
 from tddspry import NoseTestCase
 from django.test.client import Client
 import settings
 from bio.models import Log, Bio
+from django.contrib.auth.models import User, check_password
 
 
 class WebTest(NoseTestCase):
@@ -25,6 +27,7 @@ class WebTest(NoseTestCase):
         url("http://localhost:8000/login/")
 
     def test_not_logged_in(self):
+        go("http://localhost:8000/logout/")
         url("http://localhost:8000/")
         find("Login to edit it")
         notfind("Logout")
@@ -35,6 +38,7 @@ class WebTest(NoseTestCase):
 
         fv("1", "username", "tonky")
         fv("1", "password", "1")
+        showforms()
         submit('0')
 
         go("http://localhost:8000/logout/")
@@ -104,4 +108,4 @@ class WebTest(NoseTestCase):
     def test_context_settings(self):
         c = Client()
         response = c.get('/')
-        self.assertEquals(response.context['settings'], settings)
+        self.assertEquals(response.context['settings'].DATABASES, settings.DATABASES)
