@@ -18,7 +18,51 @@ class WebTest(NoseTestCase):
         find("Born and alive")
         find("igor.tonky@gmail.com")
 
+    def test_edit_require_auth(self):
+        go("http://localhost:8000/edit/")
+
+        find("Please log in:")
+        url("http://localhost:8000/login/")
+
+    def test_not_logged_in(self):
+        url("http://localhost:8000/")
+        find("Login to edit it")
+        notfind("Logout")
+        notfind("Edit bio")
+
+    def test_logout(self):
+        go("http://localhost:8000/login/")
+
+        fv("1", "username", "tonky")
+        fv("1", "password", "1")
+        submit('0')
+
+        go("http://localhost:8000/logout/")
+
+        url("http://localhost:8000/")
+        find("Login to edit it")
+        notfind("Logout")
+        notfind("Edit bio")
+
+    def test_logged_in(self):
+        go("http://localhost:8000/login/")
+
+        fv("1", "username", "tonky")
+        fv("1", "password", "1")
+        submit('0')
+
+        url("http://localhost:8000/")
+        notfind("Login")
+        find("logout")
+        find("Edit this data")
+
     def test_edit_form_error(self):
+        go("http://localhost:8000/login/")
+
+        fv("1", "username", "tonky")
+        fv("1", "password", "1")
+        submit('0')
+
         go("http://localhost:8000/edit/")
         fv("1", "name", "")
         submit('0')
@@ -29,6 +73,12 @@ class WebTest(NoseTestCase):
         find("Name is required and should be valid.")
 
     def test_edit_form_saved(self):
+        go("http://localhost:8000/login/")
+
+        fv("1", "username", "tonky")
+        fv("1", "password", "1")
+        submit('0')
+
         go("http://localhost:8000/edit/")
         fv("1", "name", "HYPNOTOAD")
         fv("1", "email", "omicron@persei.no9")
