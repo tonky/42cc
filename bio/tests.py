@@ -87,6 +87,11 @@ class WebTest(HttpTestCase):
         self.notfind("Igor")
         self.find("Name is required and should be valid.")
 
+    def test_edit_form_error(self):
+        self.go("/edit/")
+        self.fv("1", "name", "")
+        self.submit('0')
+
     def test_edit_form_saved(self):
         self.go200("/login/")
 
