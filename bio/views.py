@@ -11,10 +11,10 @@ class BioForm(ModelForm):
         model = Bio
 
 
-
 def index(request):
     bio = Bio.objects.get(pk=1)
-    return render_to_response('index.html', {'bio': bio}, context_instance=RequestContext(request))
+    return render_to_response('index.html', {'bio': bio},
+                              context_instance=RequestContext(request))
 
 
 def edit(request):
@@ -22,7 +22,8 @@ def edit(request):
 
     form = BioForm(instance=bio)
 
-    return render_to_response('edit_form.html', {'form': form}, context_instance=RequestContext(request))
+    return render_to_response('edit_form.html', {'form': form},
+                              context_instance=RequestContext(request))
 
 
 def save(request):
@@ -35,4 +36,5 @@ def save(request):
 
     form = BioForm(request.POST)
 
-    return render_to_response('edit_form.html', {'form': form}, context_instance=RequestContext(request))
+    return render_to_response('edit_form.html', {'form': form},
+                              context_instance=RequestContext(request))
