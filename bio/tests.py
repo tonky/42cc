@@ -1,45 +1,44 @@
 import datetime
 import time
-from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
-from tddspry import NoseTestCase
+from tddspry.django import HttpTestCase
 from django.test.client import Client
 import settings
 from bio.models import Log, Bio
 
 
-class WebTest(NoseTestCase):
+class WebTest(HttpTestCase):
     start_live_server = True
 
     def test_bio_index(self):
-        go("http://localhost:8000/")
-        title("My biography")
-        find("Igor")
-        find("Tonky")
-        find("Born and alive")
-        find("igor.tonky@gmail.com")
+        self.go200("/")
+        self.title("My biography")
+        self.find("Igor")
+        self.find("Tonky")
+        self.find("Born and alive")
+        self.find("igor.tonky@gmail.com")
 
     def test_edit_form_error(self):
-        go("http://localhost:8000/edit/")
-        fv("1", "name", "")
-        submit('0')
+        self.go("/edit/")
+        self.fv("1", "name", "")
+        self.submit('0')
 
-        url("http://localhost:8000/save/")
-        find("Tonky")
-        notfind("Igor")
-        find("Name is required and should be valid.")
+        self.url("/save/")
+        self.find("Tonky")
+        self.notfind("Igor")
+        self.find("Name is required and should be valid.")
 
     def test_edit_form_saved(self):
-        go("http://localhost:8000/edit/")
-        fv("1", "name", "HYPNOTOAD")
-        fv("1", "email", "omicron@persei.no9")
-        submit('0')
+        self.go("/edit/")
+        self.fv("1", "name", "HYPNOTOAD")
+        self.fv("1", "email", "omicron@persei.nine")
+        self.submit('0')
 
-        url("http://localhost:8000/")
-        find("HYPNOTOAD")
-        find("omicron@persei.no9")
+        self.url("/")
+        self.find("HYPNOTOAD")
+        self.find("omicron@persei.nine")
 
     def test_middleware_logging(self):
-        go("http://localhost:8000/test/me/")
+        self.go("/test/me/")
 
         req = Log.objects.order_by('-date')[0] # last by date
 
