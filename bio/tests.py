@@ -1,14 +1,14 @@
-import time, datetime
-from twill.commands import find, code, title, go
-from tddspry import NoseTestCase
+import time
+import datetime
+from tddspry.django import HttpTestCase
 from bio.models import Log, Bio
 
 
-class WebTest(NoseTestCase):
+class WebTest(HttpTestCase):
     start_live_server = True
 
     def test_middleware_logging(self):
-        go("http://localhost:8000/test/me/")
+        self.go("/test/me/")
 
         req = Log.objects.order_by('-date')[0] # last by date
 
