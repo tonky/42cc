@@ -1,6 +1,7 @@
 import datetime
 import time
 from tddspry.django import HttpTestCase
+import settings
 from django.test.client import Client
 from django.forms import ModelForm
 import settings
