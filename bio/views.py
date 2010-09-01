@@ -4,13 +4,17 @@ from django.template import RequestContext
 from bio.models import Bio
 from django.forms import ModelForm
 
+
 class BioForm(ModelForm):
+
     class Meta:
         model = Bio
+
 
 def index(request):
     bio = Bio.objects.get(pk=1)
     return render_to_response('index.html', {'bio': bio}, context_instance=RequestContext(request))
+
 
 def edit(request):
     bio = Bio.objects.get(pk=1)
@@ -18,6 +22,7 @@ def edit(request):
     form = BioForm(instance=bio)
 
     return render_to_response('edit_form.html', {'form': form}, context_instance=RequestContext(request))
+
 
 def save(request):
     bio = Bio.objects.get(pk=1)

@@ -1,9 +1,11 @@
-import time, datetime
+import datetime
+import time
 from twill.commands import notfind, find, code, title, go, fv, submit, url, follow
 from tddspry import NoseTestCase
 from django.test.client import Client
 import settings
 from bio.models import Log, Bio
+
 
 class WebTest(NoseTestCase):
     start_live_server = True
