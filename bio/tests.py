@@ -1,12 +1,10 @@
 import datetime
 import time
 from tddspry.django import HttpTestCase
-import settings
 from django.test.client import Client
 from django.forms import ModelForm
 import settings
 from bio.models import Log, Bio
-from django.contrib.auth.models import User, check_password
 from bio.views import BioForm
 
 
@@ -37,7 +35,7 @@ class WebTest(HttpTestCase):
         self.go200("/edit/")
 
         self.find("Please log in:")
-        self.url("/login/.*")
+        self.url('/login/.*')
 
     def test_not_logged_in(self):
         self.go200("/logout/")
@@ -79,7 +77,7 @@ class WebTest(HttpTestCase):
         self.fv("1", "password", "1")
         self.submit('0')
 
-        self.go("/edit/")
+        self.go200("/edit/")
         self.fv("1", "name", "")
         self.submit('0')
 
@@ -87,11 +85,6 @@ class WebTest(HttpTestCase):
         self.find("Tonky")
         self.notfind("Igor")
         self.find("Name is required and should be valid.")
-
-    def test_edit_form_error(self):
-        self.go("/edit/")
-        self.fv("1", "name", "")
-        self.submit('0')
 
     def test_edit_form_saved(self):
         self.go200("/login/")
