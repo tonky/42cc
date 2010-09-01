@@ -8,5 +8,14 @@
       "bio": "Born and alive",
       "email": "igor.tonky@gmail.com"
     }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "tonky",
+      "password": "sha1$salt$bdb534d88ee9f2f49342860648b9d1fc40f7f847",
+      "email": "igor.tonky@gmail.com"
+    }
   }
 ]

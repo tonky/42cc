@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     (r'^$', 'bio.views.index'),
     (r'^edit/$', 'bio.views.edit'),
     (r'^save/$', 'bio.views.save'),
+    (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    (r'^logout/$', 'bio.views.logoff'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:

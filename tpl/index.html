@@ -7,6 +7,12 @@
     <p id="surname">{{ bio.surname }}</p>
     <p id="bio">{{ bio.bio }}</p>
     <p id="email">{{ bio.email }}</p>
-    <p><a href="/edit/">Edit this data</a></p>
+
+    {% if user.is_authenticated %}
+        <p><a href="/edit/">Edit this data</a></p>
+        <p><a href="/logout/">Logout</a></p>
+    {% else %}
+        <p><a href="/login/">Login to edit it</a></p>
+    {% endif %}
 </body>
 </html>
