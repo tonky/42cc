@@ -3,6 +3,7 @@ from twill.commands import find, code, title, go
 from tddspry import NoseTestCase
 from bio.models import Log, Bio
 
+
 class WebTest(NoseTestCase):
     start_live_server = True
 
