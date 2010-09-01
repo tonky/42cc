@@ -1,5 +1,3 @@
-import os, sys
-
 import os
 
 DEBUG = True
