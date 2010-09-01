@@ -4,13 +4,27 @@ from twill.commands import notfind, find, code, title, go, fv, submit, url, foll
 from twill.commands import showforms
 from tddspry import NoseTestCase
 from django.test.client import Client
+from django.forms import ModelForm
 import settings
 from bio.models import Log, Bio
 from django.contrib.auth.models import User, check_password
+from bio.views import BioForm
 
 
 class WebTest(NoseTestCase):
     start_live_server = True
+
+    def test_form_inversion(self):
+        class StraightBioForm(ModelForm):
+
+            class Meta:
+                model = Bio
+
+        old_order = StraightBioForm.base_fields.keys()
+        new_order = BioForm.base_fields.keys()
+
+        self.assertEquals(list(reversed(old_order)), new_order)
+
 
     def test_bio_index(self):
         go("http://localhost:8000/")
