@@ -18,6 +18,7 @@ DATABASES = {
 }
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TDDSPRY_PORT = 8000
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/login/"
 
