@@ -5,6 +5,7 @@ from django.test.client import Client
 import settings
 from bio.models import Log, Bio
 
+
 class WebTest(NoseTestCase):
     start_live_server = True
 
