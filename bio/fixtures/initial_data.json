@@ -15,7 +15,10 @@
     "fields": {
       "username": "tonky",
       "password": "sha1$salt$bdb534d88ee9f2f49342860648b9d1fc40f7f847",
-      "email": "igor.tonky@gmail.com"
+      "email": "igor.tonky@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "is_superuser": true
     }
   }
 ]

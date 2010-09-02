@@ -104,5 +104,5 @@ INSTALLED_APPS = (
     'bio',
     'django_nose',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
 )

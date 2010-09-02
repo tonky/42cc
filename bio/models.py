@@ -7,6 +7,9 @@ class Bio(models.Model):
     bio = models.TextField()
     email = models.EmailField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class Log(models.Model):
     method = models.CharField(max_length=10)

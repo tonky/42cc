@@ -126,4 +126,14 @@ class WebTest(HttpTestCase):
 
         self.assertTrue("/login/" in links)
         self.assertTrue("/admin/bio/bio/1/" in links)
+        self.assertFalse("/admin/auth/user/1/" in links)
+
+        self.go200("/login/")
+
+        self.fv("1", "username", "tonky")
+        self.fv("1", "password", "1")
+        self.submit('0')
+
+        links = [l.url for l in self.showlinks()]
+
         self.assertTrue("/admin/auth/user/1/" in links)
