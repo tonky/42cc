@@ -10,6 +10,7 @@ from bio.views import BioForm
 from selenium.remote import connect
 from selenium import FIREFOX
 
+
 class WebTest(HttpTestCase):
     start_live_server = True
 
@@ -22,6 +23,7 @@ class WebTest(HttpTestCase):
 
         old_order = StraightBioForm.base_fields.keys()
         new_order = BioForm.base_fields.keys()
+
 
         self.assertEquals(list(reversed(old_order)), new_order)
 

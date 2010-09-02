@@ -1,3 +1,22 @@
+<html>
+<head>
+        <link type="text/css" href="/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" />
+        <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js"></script>
+        <script type="text/javascript">
+            $(function(){         
+                // Datepicker
+                $('#id_born').datepicker({ dateFormat: 'yy-mm-dd' });
+
+                //hover states on the static widgets
+                $('#dialog_link, ul#icons li').hover(
+                    function() { $(this).addClass('ui-state-hover'); },
+                    function() { $(this).removeClass('ui-state-hover'); }
+                );
+             });
+        </script>
+</head>
+
 {% for field in form %}
     {% if field.errors %}
         {% for error in field.errors %}
@@ -8,6 +27,8 @@
 
 
 <form action="/save/" method="post">{% csrf_token %}
-{{ form.as_ul }}
-<input type="submit" name="None" value="Submit" />
+{{ form.as_p }}
+<input type="submit" name="save_bio" value="Submit" />
 </form>
+
+</html>

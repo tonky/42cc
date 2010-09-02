@@ -5,6 +5,7 @@
     "fields": {
       "name": "Igor",
       "surname": "Tonky",
+      "born": "1981-01-24",
       "bio": "Born and alive",
       "email": "igor.tonky@gmail.com"
     }
