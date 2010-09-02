@@ -119,3 +119,11 @@ class WebTest(HttpTestCase):
         c = Client()
         response = c.get('/')
         self.assertEquals(response.context['settings'].DATABASES, settings.DATABASES)
+
+    def test_template_tag(self):
+        self.go200("/")
+        links = [l.url for l in self.showlinks()]
+
+        self.assertTrue("/login/" in links)
+        self.assertTrue("/admin/bio/bio/1/" in links)
+        self.assertTrue("/admin/auth/user/1/" in links)
