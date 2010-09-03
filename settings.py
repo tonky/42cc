@@ -21,7 +21,6 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 TDDSPRY_PORT = 8000
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/login/"
-TDDSPRY_PORT = 8000
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -49,6 +48,8 @@ USE_L10N = True
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''
+
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).

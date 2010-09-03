@@ -1,0 +1,36 @@
+Reasoning for using Selenium:
+============================
+i honestly tried windmill, but it isn't launching an instance of firefox on my machine. i thinks it has something to do with the built-in mozrunner, because the stock one from pip works just fine.
+btw, selenium server 2.0a5 wasn't working either, so i had to use 2.04a for server.
+
+
+
+Running tests:
+===================
+
+Before tests are run, Selenium server has to be launched and present in background.
+
+1) First run Selenium server instance(use either method):
+  - In background, using xvfb:
+    $ startx -- `which Xvfb` :1 -screen 0 1024x768x24 2>&1 >/dev/null
+    $ DISPLAY=:1 java -jar /opt/selenium/selenium-server-standalone-2.0a4.jar
+
+  - In foreground, with popping instances of firefox:
+    $ java -jar /opt/selenium/selenium-server-standalone-2.0a4.jar
+
+
+2) Then run tests normally from project folder:
+    $ PYTHONPATH=..:. nosetests -P --with-django -w . -e django
+
+
+
+Selenium installation:
+=========================
+Latest Selenium server(2.0a5) is buggy, so use previous one:
+
+1) Install language bindings:
+  pip install -U selenium
+
+2) Get working server:
+  $ mkdir /opt/selenium
+  $ wget 'http://selenium.googlecode.com/files/selenium-server-standalone-2.0a4.jar' -P /opt/selenium
