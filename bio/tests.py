@@ -22,11 +22,11 @@ class CommandTest(unittest.TestCase):
 
         models = p.stdout.readlines()
 
-        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 0\n"]
+        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 49\n"]  # after fixture
 
         self.assertEquals(models, expected)
 
-"""
+
 class DbTest(DatabaseTestCase):
 
     def test_create(self):
@@ -207,4 +207,3 @@ class WebTest(HttpTestCase):
         self.assertEquals(b.find_element_by_id("born").get_text(), "Jan. 15, 1981")
 
         b.close()
-"""
