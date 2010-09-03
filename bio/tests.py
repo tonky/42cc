@@ -1,14 +1,43 @@
 import datetime
 import time
-from tddspry.django import HttpTestCase
+from tddspry.django import HttpTestCase, DatabaseTestCase
 from django.test.client import Client
 from django.forms import ModelForm
 import settings
-from bio.models import Log, Bio
+from bio.models import Log, Bio, CrudLog
 from bio.views import BioForm
 
 from selenium.remote import connect
 from selenium import FIREFOX
+
+
+class DbTest(DatabaseTestCase):
+
+    def test_create(self):
+        self.assert_create(Bio, name="Bender", born="2980-01-01")
+
+        req = CrudLog.objects.order_by("-date")[0]
+
+        self.assert_equals(req.action, "create")
+        self.assert_equals(req.model, "Bio")
+
+    def test_update(self):
+        bio = self.assert_create(Bio, name="Bender", born="2980-01-01")
+        self.assert_update(bio, name="Flex-o")
+
+        req = CrudLog.objects.order_by("-date")[0]
+
+        self.assert_equals(req.action, "update")
+        self.assert_equals(req.model, "Bio")
+
+    def test_delete(self):
+        bio = self.assert_create(Bio, name="Bender", born="2980-01-01")
+        self.assert_delete(bio)
+
+        req = CrudLog.objects.order_by("-date")[0]
+
+        self.assert_equals(req.action, "delete")
+        self.assert_equals(req.model, "Bio")
 
 
 class WebTest(HttpTestCase):
