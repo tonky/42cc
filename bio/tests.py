@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import time
 from subprocess import Popen, PIPE
 from tddspry.django import HttpTestCase, DatabaseTestCase
@@ -7,39 +8,31 @@ from django.forms import ModelForm
 from django.test.client import Client
 from django.test import TestCase
 import settings
+from bio.management.commands.models import objects_count
 from bio.models import Log, Bio, CrudLog
 from bio.views import BioForm
+
 
 from selenium.remote import connect
 from selenium import FIREFOX
 from selenium.common.exceptions import ElementNotVisibleException
 
 
-"""
 class CommandTest(TestCase):
 
     def testAllModels(self):
-        # remove log objects, as they get there with fixtures initiation
-
-        p = Popen(["python", os.path.join(os.getcwd(), "manage.py"), "syncdb"],
-                stdout=PIPE)
-
-        print Bio.objects.count()
-        print Log.objects.count()
-        print CrudLog.objects.count()
-
-        p.stdout.readlines()
-        # print p.stdout.readlines()
-
         p = Popen(["python", os.path.join(os.getcwd(), "manage.py"), "models"],
                 stdout=PIPE)
 
-        models = p.stdout.readlines()
+        models = p.stdout.read()
 
-        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 0\n"]  # after fixture
+        # make sure it works at all
+        self.assertTrue(re.match('Bio: \d+\nLog: \d+\nCrudLog: \d+\n', models))
 
-        self.assertEquals(models, expected)
-"""
+        expected = [("Bio", 1), ("Log", 0), ("CrudLog", 47)]  # after fixtures
+
+        # make sure it reads correct data from db
+        self.assertEquals(expected, objects_count([Bio, Log, CrudLog]))
 
 
 class DbTest(DatabaseTestCase):
