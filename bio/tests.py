@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import time
 from subprocess import Popen, PIPE
 import unittest
@@ -9,6 +10,7 @@ from django.forms import ModelForm
 import settings
 from bio.models import Log, Bio, CrudLog
 from bio.views import BioForm
+from bio.management.commands.models import objects_count
 
 from selenium.remote import connect
 from selenium import FIREFOX
@@ -20,11 +22,15 @@ class CommandTest(unittest.TestCase):
         p = Popen(["python", os.path.join(os.getcwd(), "manage.py"), "models"],
                 stdout=PIPE)
 
-        models = p.stdout.readlines()
+        models = p.stdout.read()
 
-        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 49\n"]  # after fixture
+        # make sure it works at all
+        self.assertTrue(re.match('Bio: \d+\nLog: \d+\nCrudLog: \d+\n', models))
 
-        self.assertEquals(models, expected)
+        expected = [("Bio", 1), ("Log", 0), ("CrudLog", 47)]  # after fixtures
+
+        # make sure it reads correct data from db
+        self.assertEquals(expected, objects_count([Bio, Log, CrudLog]))
 
 
 class DbTest(DatabaseTestCase):

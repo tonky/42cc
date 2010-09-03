@@ -4,6 +4,14 @@ from settings import INSTALLED_APPS
 from django.db.models.base import ModelBase
 
 
+def objects_count(models):
+    """ using function here so i could test this on the test db, since
+    "manage.py" command runs on the live db
+    """
+
+    return [(m.__name__, m.objects.count()) for m in models]
+
+
 class Command(NoArgsCommand):
     args = 'none'
     help = 'Prints all the models in project with their instances count in db'
@@ -43,5 +51,7 @@ class Command(NoArgsCommand):
                 if type(module.__dict__[prop]) == ModelBase:
                     project_models.append(module.__dict__[prop])
 
-        for m in project_models:
-            print "%s: %d" % (m.__name__, m.objects.count())
+        counts = objects_count(project_models)
+
+        for name, count in counts:
+            print "%s: %d" % (name, count)
