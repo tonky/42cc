@@ -196,6 +196,25 @@ class WebTest(HttpTestCase):
 
         self.assertTrue("/admin/auth/user/1/" in links)
 
+    def test_first_ten_requests(self):
+        self.go200("/")
+        self.go200("/")
+        self.go200("/")
+        self.go200("/")
+        self.go200("/")
+        self.go200("/login/")
+        self.go200("/login/")
+        self.go200("/login/")
+        self.go200("/login/")
+        self.go200("/login/")
+        self.go200("/logout/")
+        self.go200("/first10/")
+
+        self.find("\[GET\] \/")
+        self.find("\[GET\] \/login\/")
+        self.notfind("\[GET\] \/logout\/")
+        self.notfind("\[GET\] \/first10\/")
+
 
 class JsTest(HttpTestCase):
     start_live_server = True
