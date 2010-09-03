@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>
+            First ten middleware requests
+        </title>
+    <head>
+<body>
+    <ul>
+    {% for request in object_list %}
+        <li>{{ request.date }}: [{{ request.method }}] {{ request.url}} </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
