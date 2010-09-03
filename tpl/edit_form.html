@@ -1,22 +1,95 @@
 <html>
 <head>
         <link type="text/css" href="/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" />
+        <link type="text/css" href="/css/bio.css" rel="stylesheet" />
         <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.form.js"></script>
+        <script type="text/javascript" src="/js/jquery.spinner.js"></script>
         <script type="text/javascript">
             $(function(){         
                 // Datepicker
                 $('#id_born').datepicker({ dateFormat: 'yy-mm-dd' });
 
-                //hover states on the static widgets
-                $('#dialog_link, ul#icons li').hover(
-                    function() { $(this).addClass('ui-state-hover'); },
-                    function() { $(this).removeClass('ui-state-hover'); }
-                );
+                // ajax submission with forms
+    var options = { 
+        // target:        '#output1',   // target element(s) to be updated with server response 
+        beforeSubmit:  showRequest,  // pre-submit callback 
+        success:       showResponse,  // post-submit callback 
+ 
+        // other available options: 
+        url:       "/save_ajax/",        // override for form's 'action' attribute 
+        //type:      type        // 'get' or 'post', override for form's 'method' attribute 
+        dataType:  'json',        // 'xml', 'script', or 'json' (expected server response type) 
+        //clearForm: true        // clear all form fields after successful submit 
+        //resetForm: true        // reset the form after successful submit 
+ 
+        // $.ajax options can be used here too, for example: 
+        //timeout:   3000 
+    }; 
+ 
+    $('#submit_ajax').click(function() { 
+        // console.log('submitting');
+        // inside event callbacks 'this' is the DOM element so we first 
+        // wrap it in a jQuery object and then invoke ajaxSubmit 
+        $('#edit_bio').ajaxSubmit(options); 
+ 
+        // !!! Important !!! 
+        // always return false to prevent standard browser submit and page navigation 
+        return false; 
+    }); 
+
+// pre-submit callback 
+function showRequest(formData, jqForm, options) { 
+    $("#errors").empty();
+    $("#success").hide();
+
+    $("#submit_ajax").spinner({ position: 'center', hide: true, 
+                                img: '/img/spinner.gif' 
+    });
+
+    $("input:text").attr("readonly", 1);
+    $("textarea").attr("readonly", 1);
+
+    return true; 
+} 
+ 
+// post-submit callback 
+function showResponse(response, statusText, xhr, $form)  { 
+    $("#submit_ajax").spinner('remove');
+
+    $("input:text").removeAttr("readonly");
+    $("textarea").removeAttr("readonly");
+
+    if (response.status == 0) {
+        // alert(response);
+        // console.log('good');
+        $("#success").show();
+    } else {
+        err = response.errors;
+        // console.log('bad');
+
+        $.each(err, function(name, error) {
+            $("#errors").append(capFirst(name) + ": " + error);
+        });
+
+        $("#errors").show();
+    }
+} 
+
+function capFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
              });
         </script>
 </head>
 
+<span id="success">
+    Form was successfully saved.
+</span>
+
+<span id="errors">
 {% for field in form %}
     {% if field.errors %}
         {% for error in field.errors %}
@@ -24,11 +97,14 @@
         {% endfor %}
     {% endif %}
 {% endfor %}
+</span>
 
 
-<form action="/save/" method="post">{% csrf_token %}
+<form id="edit_bio" action="/save/" method="post">{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" name="save_bio" value="Submit" />
 </form>
+
+<input type="button" id="submit_ajax" name="save_bio_ajax" value="Submit via ajax" />
 
 </html>

@@ -1,4 +1,7 @@
 # Create your views here.
+import json
+import time
+from django.http import HttpResponse
 from django.shortcuts import render_to_response, HttpResponseRedirect
 from django.template import RequestContext
 from bio.models import Bio
@@ -51,8 +54,6 @@ def save(request):
     bio = Bio.objects.get(pk=1)
     form = BioForm(request.POST, instance=bio)
 
-    print request.POST
-
     if form.is_valid():
         form.save()
         return HttpResponseRedirect('/')
@@ -61,3 +62,17 @@ def save(request):
 
     return render_to_response('edit_form.html', {'form': form},
                               context_instance=RequestContext(request))
+
+
+def save_ajax(request):
+    time.sleep(0.3)  # latency imitation, also needed for FF tests
+    bio = Bio.objects.get(pk=1)
+    form = BioForm(request.POST, instance=bio)
+
+    if form.is_valid():
+        form.save()
+        return HttpResponse(json.dumps({'status': 0}))
+
+    form = BioForm(request.POST)
+
+    return HttpResponse(json.dumps({'status': 1, 'errors': form.errors}))
