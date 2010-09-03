@@ -11,6 +11,15 @@
     }
   },
   {
+    "model": "bio.crudlog",
+    "pk": 1,
+    "fields": {
+      "action": "create",
+      "model": "Bio",
+      "date": "1981-01-24 11:01:11"
+    }
+  },
+  {
     "model": "auth.user",
     "pk": 1,
     "fields": {

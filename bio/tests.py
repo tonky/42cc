@@ -1,5 +1,8 @@
 import datetime
+import os
 import time
+from subprocess import Popen, PIPE
+import unittest
 from tddspry.django import HttpTestCase, DatabaseTestCase
 from django.test.client import Client
 from django.forms import ModelForm
@@ -9,6 +12,19 @@ from bio.views import BioForm
 
 from selenium.remote import connect
 from selenium import FIREFOX
+
+
+class CommandTest(unittest.TestCase):
+
+    def testAllModels(self):
+        p = Popen(["python", os.path.join(os.getcwd(), "manage.py"), "models"],
+                stdout=PIPE)
+
+        models = p.stdout.readlines()
+
+        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 49\n"]  # after fixture
+
+        self.assertEquals(models, expected)
 
 
 class DbTest(DatabaseTestCase):
