@@ -1,5 +1,8 @@
 import datetime
+import os
 import time
+from subprocess import Popen, PIPE
+import unittest
 from tddspry.django import HttpTestCase, DatabaseTestCase
 from django.test.client import Client
 from django.forms import ModelForm
@@ -11,6 +14,19 @@ from selenium.remote import connect
 from selenium import FIREFOX
 
 
+class CommandTest(unittest.TestCase):
+
+    def testAllModels(self):
+        p = Popen(["python", os.path.join(os.getcwd(), "manage.py"), "models"],
+                stdout=PIPE)
+
+        models = p.stdout.readlines()
+
+        expected = ["Bio: 1\n", "Log: 0\n", "CrudLog: 0\n"]
+
+        self.assertEquals(models, expected)
+
+"""
 class DbTest(DatabaseTestCase):
 
     def test_create(self):
@@ -191,3 +207,4 @@ class WebTest(HttpTestCase):
         self.assertEquals(b.find_element_by_id("born").get_text(), "Jan. 15, 1981")
 
         b.close()
+"""
