@@ -173,7 +173,8 @@ class WebTest(HttpTestCase):
     def test_context_settings(self):
         c = Client()
         response = c.get('/')
-        self.assertEquals(response.context['settings'].DATABASES, settings.DATABASES)
+        self.assertEquals(response.context['settings'].DATABASES,
+                          settings.DATABASES)
 
     def test_template_tag(self):
         self.go200("/")
@@ -206,10 +207,12 @@ class WebTest(HttpTestCase):
 
         b.find_element_by_id("id_born").click()
         b.find_element_by_link_text("15").click()
-        self.assertEquals(b.find_element_by_id("id_born").get_value(), "1981-01-15")
+        self.assertEquals(b.find_element_by_id("id_born").get_value(),
+                          "1981-01-15")
         b.find_element_by_name("save_bio").click()
 
         self.assertEquals(b.get_current_url(), "http://localhost:8000/")
-        self.assertEquals(b.find_element_by_id("born").get_text(), "Jan. 15, 1981")
+        self.assertEquals(b.find_element_by_id("born").get_text(),
+                          "Jan. 15, 1981")
 
         b.close()
