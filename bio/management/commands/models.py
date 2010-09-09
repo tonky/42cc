@@ -43,7 +43,7 @@ class Command(NoArgsCommand):
 
             # filter out models from python install
             for model in models:
-                if re.search("site-packages", model.__file__):
+                if re.search("python", model.__file__):
                     continue
 
                 models_modules.append(model)
