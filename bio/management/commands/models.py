@@ -43,7 +43,11 @@ class Command(NoArgsCommand):
 
             # filter out models from python install
             for model in models:
-                if re.search("site-packages", model.__file__):
+                # assume that models with "python" in path are system-wide
+                # installed, and not the ones we need
+                # i was using "site-packages", but on ubuntu/osx it ain't so,
+                # apparently
+                if re.search("python", model.__file__):
                     continue
 
                 models_modules.append(model)
