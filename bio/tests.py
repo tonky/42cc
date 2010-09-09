@@ -176,7 +176,8 @@ class WebTest(HttpTestCase):
     def test_context_settings(self):
         c = Client()
         response = c.get('/')
-        self.assertEquals(response.context['settings'].DATABASES, settings.DATABASES)
+        self.assertEquals(response.context['settings'].DATABASES,
+                          settings.DATABASES)
 
     def test_template_tag(self):
         self.go200("/")
@@ -238,9 +239,11 @@ class JsTest(HttpTestCase):
 
         self.b.find_element_by_id("submit_ajax").click()
 
-        self.assertFalse(self.b.find_element_by_id("submit_ajax").is_displayed())
+        self.assertFalse(
+                self.b.find_element_by_id("submit_ajax").is_displayed())
 
-        self.assertEquals(self.b.get_current_url(), "http://localhost:8000/edit/")
+        self.assertEquals(self.b.get_current_url(),
+                          "http://localhost:8000/edit/")
 
         time.sleep(0.2)
 
@@ -249,7 +252,8 @@ class JsTest(HttpTestCase):
 
         self.b.get("http://localhost:8000/")
 
-        self.assertEquals(self.b.find_element_by_id("name").get_text(), "elvis")
+        self.assertEquals(self.b.find_element_by_id("name").get_text(),
+                          "elvis")
 
     def test_ajax_submit_form_error(self):
         self._login()
@@ -264,7 +268,8 @@ class JsTest(HttpTestCase):
         ajax_submit = self.b.find_element_by_id("submit_ajax")
         self.assertRaises(ElementNotVisibleException, ajax_submit.click)
 
-        self.assertTrue(self.b.find_element_by_id("id_name").get_attribute("disabled"))
+        self.assertTrue(
+                self.b.find_element_by_id("id_name").get_attribute("disabled"))
 
         time.sleep(0.2)
 
@@ -280,15 +285,18 @@ class JsTest(HttpTestCase):
         self.b.find_element_by_id("login").submit()
 
         self.b.get("http://localhost:8000/edit/")
-        self.assertEquals(self.b.get_current_url(), "http://localhost:8000/edit/")
+        self.assertEquals(self.b.get_current_url(),
+                          "http://localhost:8000/edit/")
 
         self.b.find_element_by_id("id_born").click()
         self.b.find_element_by_link_text("15").click()
-        self.assertEquals(self.b.find_element_by_id("id_born").get_value(), "1981-01-15")
+        self.assertEquals(self.b.find_element_by_id("id_born").get_value(),
+                          "1981-01-15")
         self.b.find_element_by_name("save_bio").click()
 
         self.assertEquals(self.b.get_current_url(), "http://localhost:8000/")
-        self.assertEquals(self.b.find_element_by_id("born").get_text(), "Jan. 15, 1981")
+        self.assertEquals(self.b.find_element_by_id("born").get_text(),
+                          "Jan. 15, 1981")
 
     def tearDown(self):
         self.b.close()
