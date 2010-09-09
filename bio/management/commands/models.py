@@ -28,6 +28,9 @@ class Command(NoArgsCommand):
                 continue
 
             # filter apps that don't have models
+            if not "models" in module.__dict__:
+                continue
+
             if not "models" in module.models.__dict__:
                 continue
 

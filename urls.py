@@ -11,7 +11,8 @@ urlpatterns = patterns('',
     (r'^edit/$', 'bio.views.edit'),
     (r'^save/$', 'bio.views.save'),
     (r'^save_ajax/$', 'bio.views.save_ajax'),
-    (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    (r'^login/$', 'django.contrib.auth.views.login',
+                  {'template_name': 'login.html'}),
     (r'^logout/$', 'bio.views.logoff'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
