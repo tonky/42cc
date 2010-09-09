@@ -78,7 +78,6 @@ class WebTest(HttpTestCase):
         old_order = StraightBioForm.base_fields.keys()
         new_order = BioForm.base_fields.keys()
 
-
         self.assertEquals(list(reversed(old_order)), new_order)
 
     def test_bio_index(self):
@@ -163,7 +162,7 @@ class WebTest(HttpTestCase):
     def test_middleware_logging(self):
         self.go("/test/me/")
 
-        req = Log.objects.order_by('-date')[0] # last by date
+        req = Log.objects.order_by('-date')[0]  # last by date
 
         now = datetime.datetime.now()
         self.assertEquals(req.method, "GET")
