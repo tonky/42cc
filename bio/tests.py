@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import re
 import time
@@ -38,7 +39,7 @@ class CommandTest(TestCase):
 class DbTest(DatabaseTestCase):
 
     def test_create(self):
-        self.assert_create(Bio, name="Bender", born="2980-01-01")
+        self.assert_create(Bio, first_name="Bender", born="2980-01-01")
 
         req = CrudLog.objects.order_by("-date")[0]
 
@@ -46,8 +47,8 @@ class DbTest(DatabaseTestCase):
         self.assert_equals(req.model, "Bio")
 
     def test_update(self):
-        bio = self.assert_create(Bio, name="Bender", born="2980-01-01")
-        self.assert_update(bio, name="Flex-o")
+        bio = self.assert_create(Bio, first_name="Bender", born="2980-01-01")
+        self.assert_update(bio, first_name="Flex-o")
 
         req = CrudLog.objects.order_by("-date")[0]
 
@@ -55,7 +56,7 @@ class DbTest(DatabaseTestCase):
         self.assert_equals(req.model, "Bio")
 
     def test_delete(self):
-        bio = self.assert_create(Bio, name="Bender", born="2980-01-01")
+        bio = self.assert_create(Bio, first_name="Bender", born="2980-01-01")
         self.assert_delete(bio)
 
         req = CrudLog.objects.order_by("-date")[0]
@@ -105,7 +106,7 @@ class WebTest(HttpTestCase):
 
         self.fv("1", "username", "tonky")
         self.fv("1", "password", "1")
-        self.submit('0')
+        self.submit200('login')
 
         self.go200("/logout/")
 
@@ -119,7 +120,7 @@ class WebTest(HttpTestCase):
 
         self.fv("1", "username", "tonky")
         self.fv("1", "password", "1")
-        self.submit('0')
+        self.submit200('login')
 
         self.url("/")
         self.notfind("Login")
@@ -131,28 +132,75 @@ class WebTest(HttpTestCase):
 
         self.fv("1", "username", "tonky")
         self.fv("1", "password", "1")
-        self.submit('0')
+        self.submit200('login')
 
         self.go200("/edit/")
-        self.fv("2", "name", "")
-        self.submit('save_bio')
+        self.fv("2", "first_name", "")
+        self.submit200('save_bio')
 
         self.url("/save/")
         self.find("Tonky")
         self.notfind("Igor")
-        self.find("Name is required and should be valid.")
+        self.find("First_name is required and should be valid.")
+
+    def test_edit_form_error_ajax(self):
+        self.go200("/login/")
+
+        self.fv(1, "username", "tonky")
+        self.fv(1, "password", "1")
+        self.submit200('login')
+
+        self.go200("/edit/")
+
+        self.fv(2, "first_name", "")
+        self.fa(2, 'http://localhost:8000/save_ajax/')
+
+        # required to bypass csrf check
+        self.add_extra_header("X-Requested-With", "XMLHttpRequest")
+
+        self.submit200("save_bio")
+
+        resp = json.loads(self.show())
+
+        self.assertEquals(resp['status'], 1)
+        self.assertEquals(resp['errors'], 
+                          {u"first_name": [u"This field is required."]})
+
+    def test_edit_form_ajax_saved(self):
+        self.go200("/login/")
+
+        self.fv(1, "username", "tonky")
+        self.fv(1, "password", "1")
+        self.submit200('login')
+
+        self.go200("/edit/")
+
+        self.fv(2, "first_name", "Nibbler")
+        self.fa(2, 'http://localhost:8000/save_ajax/')
+
+        # required to bypass csrf check
+        self.add_extra_header("X-Requested-With", "XMLHttpRequest")
+
+        self.submit200("save_bio")
+
+        resp = json.loads(self.show())
+
+        self.assertEquals(resp['status'], 0)
+
+        self.go200("/")
+        self.find("Nibbler")
 
     def test_edit_form_saved(self):
         self.go200("/login/")
 
         self.fv("1", "username", "tonky")
         self.fv("1", "password", "1")
-        self.submit('0')
+        self.submit200("login")
 
         self.go200("/edit/")
-        self.fv("2", "name", "HYPNOTOAD")
+        self.fv("2", "first_name", "HYPNOTOAD")
         self.fv("2", "email", "omicron@persei.nine")
-        self.submit('0')
+        self.submit200("save_bio")
 
         self.url("/")
         self.find("HYPNOTOAD")
@@ -189,93 +237,8 @@ class WebTest(HttpTestCase):
 
         self.fv("1", "username", "tonky")
         self.fv("1", "password", "1")
-        self.submit('0')
+        self.submit200('login')
 
         links = [l.url for l in self.showlinks()]
 
         self.assertTrue("/admin/auth/user/1/" in links)
-
-
-class JsTest(HttpTestCase):
-    start_live_server = True
-
-    def setUp(self):
-        self.b = connect(FIREFOX)
-
-    def _login(self):
-        self.b.get("http://localhost:8000/login/")
-        self.b.find_element_by_id("id_username").send_keys("tonky")
-        self.b.find_element_by_id("id_password").send_keys("1")
-        self.b.find_element_by_id("login").submit()
-
-    def test_ajax_submit_form(self):
-        self._login()
-
-        self.b.get("http://localhost:8000/edit/")
-
-        self.b.find_element_by_id("id_name").clear()
-        self.b.find_element_by_id("id_name").send_keys("elvis")
-
-        self.b.find_element_by_id("submit_ajax").click()
-
-        self.assertFalse(
-                self.b.find_element_by_id("submit_ajax").is_displayed())
-
-        self.assertEquals(self.b.get_current_url(),
-                          "http://localhost:8000/edit/")
-
-        time.sleep(0.2)
-
-        self.assertEquals(self.b.find_element_by_id("success").get_text(),
-            "Form was successfully saved.")
-
-        self.b.get("http://localhost:8000/")
-
-        self.assertEquals(self.b.find_element_by_id("name").get_text(),
-                          "elvis")
-
-    def test_ajax_submit_form_error(self):
-        self._login()
-
-        self.b.get("http://localhost:8000/edit/")
-
-        self.b.find_element_by_id("id_name").clear()
-
-        ajax_submit = self.b.find_element_by_id("submit_ajax")
-        ajax_submit.click()
-
-        ajax_submit = self.b.find_element_by_id("submit_ajax")
-        self.assertRaises(ElementNotVisibleException, ajax_submit.click)
-
-        self.assertTrue(
-                self.b.find_element_by_id("id_name").get_attribute("disabled"))
-
-        time.sleep(0.2)
-
-        err = self.b.find_element_by_id("errors").get_text()
-        name_err = "Name: This field is required."
-
-        self.assertEquals(err, name_err)
-
-    def test_datepicker_select(self):
-        self.b.get("http://localhost:8000/login/")
-        self.b.find_element_by_id("id_username").send_keys("tonky")
-        self.b.find_element_by_id("id_password").send_keys("1")
-        self.b.find_element_by_id("login").submit()
-
-        self.b.get("http://localhost:8000/edit/")
-        self.assertEquals(self.b.get_current_url(),
-                          "http://localhost:8000/edit/")
-
-        self.b.find_element_by_id("id_born").click()
-        self.b.find_element_by_link_text("15").click()
-        self.assertEquals(self.b.find_element_by_id("id_born").get_value(),
-                          "1981-01-15")
-        self.b.find_element_by_name("save_bio").click()
-
-        self.assertEquals(self.b.get_current_url(), "http://localhost:8000/")
-        self.assertEquals(self.b.find_element_by_id("born").get_text(),
-                          "Jan. 15, 1981")
-
-    def tearDown(self):
-        self.b.close()
