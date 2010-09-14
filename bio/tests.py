@@ -163,7 +163,7 @@ class WebTest(HttpTestCase):
         resp = json.loads(self.show())
 
         self.assertEquals(resp['status'], 1)
-        self.assertEquals(resp['errors'], 
+        self.assertEquals(resp['errors'],
                           {u"first_name": [u"This field is required."]})
 
     def test_edit_form_ajax_saved(self):
