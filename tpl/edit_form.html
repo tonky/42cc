@@ -100,7 +100,7 @@ function capFirst(string) {
 </span>
 
 
-<form id="edit_bio" action="/save/" method="post">{% csrf_token %}
+<form id="edit_bio" name="edit_bio" action="/save/" method="post">{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" name="save_bio" value="Submit" />
 </form>
