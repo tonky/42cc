@@ -29,7 +29,10 @@ class CommandTest(TestCase):
         models = p.stdout.read()
 
         # make sure it works at all
-        self.assertTrue(re.match('Bio: \d+\nLog: \d+\nCrudLog: \d+\n', models))
+        models_regexp = 'Bio: \d+\nLog: \d+\nCrudLog: \d+\n'
+        match_err = "\n%s==== got ====\n%s" % (models_regexp, models)
+
+        self.assertTrue(re.match(models_regexp, models), match_err)
 
         expected = [("Bio", 1), ("Log", 0), ("CrudLog", 47)]  # after fixtures
 
