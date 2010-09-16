@@ -12,7 +12,6 @@ import settings
 from bio.management.commands.models import objects_count
 from bio.models import Log, Bio, CrudLog
 from bio.views import BioForm
-from bio.management.commands.models import objects_count
 
 
 from selenium.remote import connect
@@ -106,11 +105,7 @@ class WebTest(HttpTestCase):
         self.notfind("Edit bio")
 
     def test_logout(self):
-        self.go200("/login/")
-
-        self.fv("1", "username", "tonky")
-        self.fv("1", "password", "1")
-        self.submit200('login')
+        self._login()
 
         self.go200("/logout/")
 
@@ -120,11 +115,7 @@ class WebTest(HttpTestCase):
         self.notfind("Edit bio")
 
     def test_logged_in(self):
-        self.go200("/login/")
-
-        self.fv("1", "username", "tonky")
-        self.fv("1", "password", "1")
-        self.submit200('login')
+        self._login()
 
         self.url("/")
         self.notfind("Login")
@@ -132,14 +123,10 @@ class WebTest(HttpTestCase):
         self.find("Edit this data")
 
     def test_edit_form_error(self):
-        self.go200("/login/")
-
-        self.fv("1", "username", "tonky")
-        self.fv("1", "password", "1")
-        self.submit200('login')
+        self._login()
 
         self.go200("/edit/")
-        self.fv("2", "first_name", "")
+        self.fv("edit_bio", "first_name", "")
         self.submit200('save_bio')
 
         self.url("/save/")
@@ -148,16 +135,12 @@ class WebTest(HttpTestCase):
         self.find("First_name is required and should be valid.")
 
     def test_edit_form_error_ajax(self):
-        self.go200("/login/")
-
-        self.fv(1, "username", "tonky")
-        self.fv(1, "password", "1")
-        self.submit200('login')
+        self._login()
 
         self.go200("/edit/")
 
-        self.fv(2, "first_name", "")
-        self.fa(2, 'http://localhost:8000/save_ajax/')
+        self.fv("edit_bio", "first_name", "")
+        self.fa("edit_bio", 'http://localhost:8000/save_ajax/')
 
         # required to bypass csrf check
         self.add_extra_header("X-Requested-With", "XMLHttpRequest")
@@ -171,16 +154,12 @@ class WebTest(HttpTestCase):
                           {u"first_name": [u"This field is required."]})
 
     def test_edit_form_ajax_saved(self):
-        self.go200("/login/")
-
-        self.fv(1, "username", "tonky")
-        self.fv(1, "password", "1")
-        self.submit200('login')
+        self._login()
 
         self.go200("/edit/")
 
-        self.fv(2, "first_name", "Nibbler")
-        self.fa(2, 'http://localhost:8000/save_ajax/')
+        self.fv("edit_bio", "first_name", "Nibbler")
+        self.fa("edit_bio", 'http://localhost:8000/save_ajax/')
 
         # required to bypass csrf check
         self.add_extra_header("X-Requested-With", "XMLHttpRequest")
@@ -195,15 +174,11 @@ class WebTest(HttpTestCase):
         self.find("Nibbler")
 
     def test_edit_form_saved(self):
-        self.go200("/login/")
-
-        self.fv("1", "username", "tonky")
-        self.fv("1", "password", "1")
-        self.submit200("login")
+        self._login()
 
         self.go200("/edit/")
-        self.fv("2", "first_name", "HYPNOTOAD")
-        self.fv("2", "email", "omicron@persei.nine")
+        self.fv("edit_bio", "first_name", "HYPNOTOAD")
+        self.fv("edit_bio", "email", "omicron@persei.nine")
         self.submit200("save_bio")
 
         self.url("/")
@@ -237,15 +212,18 @@ class WebTest(HttpTestCase):
         self.assertTrue("/admin/bio/bio/1/" in links)
         self.assertFalse("/admin/auth/user/1/" in links)
 
-        self.go200("/login/")
-
-        self.fv("1", "username", "tonky")
-        self.fv("1", "password", "1")
-        self.submit200('login')
+        self._login()
 
         links = [l.url for l in self.showlinks()]
 
         self.assertTrue("/admin/auth/user/1/" in links)
+
+    def _login(self):
+        self.go200("/login/")
+
+        self.fv(1, "username", "tonky")
+        self.fv(1, "password", "1")
+        self.submit200('login')
 
     def test_first_ten_requests(self):
         self.go200("/")
