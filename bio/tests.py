@@ -14,11 +14,6 @@ from bio.models import Log, Bio, CrudLog
 from bio.views import BioForm
 
 
-from selenium.remote import connect
-from selenium import FIREFOX
-from selenium.common.exceptions import ElementNotVisibleException
-
-
 class CommandTest(TestCase):
 
     def testAllModels(self):
@@ -28,10 +23,10 @@ class CommandTest(TestCase):
         models = p.stdout.read()
 
         # make sure it works at all
-        models_regexp = 'Bio: \d+\nLog: \d+\nCrudLog: \d+\n'
+        models_regexp = 'Bio\: \d+\nLog\: \d+\nCrudLog\: \d+\n'
         match_err = "\n%s==== got ====\n%s" % (models_regexp, models)
 
-        self.assertTrue(re.match(models_regexp, models), match_err)
+        self.assertEquals(len(re.findall(models_regexp, models)), 1, match_err)
 
         expected = [("Bio", 1), ("Log", 0), ("CrudLog", 47)]  # after fixtures
 
@@ -137,18 +132,23 @@ class WebTest(HttpTestCase):
     def test_edit_form_error_ajax(self):
         self._login()
 
-        self.go200("/edit/")
+        response = self.client.post('/save_ajax/', {
+        'born': '1981-01-24',
+        'first_name': 'Nibbler',
+        })
+        
+        resp = json.loads(response.content)
+        self.assertEquals(resp['status'], 0)
 
-        self.fv("edit_bio", "first_name", "")
-        self.fa("edit_bio", 'http://localhost:8000/save_ajax/')
+        self.go200("/")
+        self.find("Nibbler")
 
-        # required to bypass csrf check
-        self.add_extra_header("X-Requested-With", "XMLHttpRequest")
-
-        self.submit200("save_bio")
-
-        resp = json.loads(self.show())
-
+        response = self.client.post('/save_ajax/', {
+        'born': '1981-01-24',
+        'first_name': '',
+        })
+        
+        resp = json.loads(response.content)
         self.assertEquals(resp['status'], 1)
         self.assertEquals(resp['errors'],
                           {u"first_name": [u"This field is required."]})
@@ -156,18 +156,12 @@ class WebTest(HttpTestCase):
     def test_edit_form_ajax_saved(self):
         self._login()
 
-        self.go200("/edit/")
-
-        self.fv("edit_bio", "first_name", "Nibbler")
-        self.fa("edit_bio", 'http://localhost:8000/save_ajax/')
-
-        # required to bypass csrf check
-        self.add_extra_header("X-Requested-With", "XMLHttpRequest")
-
-        self.submit200("save_bio")
-
-        resp = json.loads(self.show())
-
+        response = self.client.post('/save_ajax/', {
+        'born': '1981-01-24',
+        'first_name': 'Nibbler',
+        })
+        
+        resp = json.loads(response.content)
         self.assertEquals(resp['status'], 0)
 
         self.go200("/")
